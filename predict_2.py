@@ -81,7 +81,7 @@ def predictint(imvalue):
     
     y_conv=tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)
     
-    init_op = tf.initialize_all_variables()
+    init_op = tf.global_variables_initializer()
     saver = tf.train.Saver()
     
     """
@@ -94,8 +94,10 @@ def predictint(imvalue):
     """
     with tf.Session() as sess:
         sess.run(init_op)
-        saver.restore(sess, "model2.ckpt")
-        #print ("Model restored.")
+        try:
+        	saver.restore(sess, "model2.ckpt")
+        except:
+        	print ("出错了")
        
         prediction=tf.argmax(y_conv,1)
         return prediction.eval(feed_dict={x: [imvalue],keep_prob: 1.0}, session=sess)
